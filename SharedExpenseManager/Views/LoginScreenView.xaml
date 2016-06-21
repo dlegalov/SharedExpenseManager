@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="SharedExpenseManager.Views.LoginScreenView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ViewModels="clr-namespace:SharedExpenseManager.ViewModels"
+        Height="300" Width="300">
+    <UserControl.DataContext>
+        <ViewModels:LoginScreenViewModel/>
+    </UserControl.DataContext>
+    <Grid>
+        <StackPanel>
+            <Label>Login Name</Label>
+            <TextBox Text="{Binding LoginName}"></TextBox>
+            <Label>Password</Label>
+            <PasswordBox Name="PasswordBox"/>
+            <Button Content="Login" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=PasswordBox}"/>
+            <Button Content="Create New User" Command="{Binding NewUserCommand}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
