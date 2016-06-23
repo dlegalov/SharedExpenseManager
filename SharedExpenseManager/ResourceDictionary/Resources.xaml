@@ -3,4 +3,5 @@
                     xmlns:converters="clr-namespace:SharedExpenseManager.Converters">
     <converters:ObjectArrayConverter x:Key="ObjectArrayConverter"/>
     <converters:VisibilityConverter x:Key="VisibilityConverter"/>
+    <converters:IntToStringConverter x:Key="IntToStringConverter"/>
 </ResourceDictionary>

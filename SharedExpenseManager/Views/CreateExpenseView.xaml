@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ViewModels="clr-namespace:SharedExpenseManager.ViewModels"
+             xmlns:Controls="clr-namespace:SharedExpenseManager.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.DataContext>
@@ -13,26 +14,28 @@
         <ScrollViewer>
             <StackPanel>
                 <Label>Current User</Label>
-                <TextBlock></TextBlock>
+                <TextBlock Text="{Binding CurrentUser.LoginName}"></TextBlock>
                 <Label>Users in Expense</Label>
                 <ListView></ListView>
                 <Button Content="Remove Selected User"/>
                 <Label>Available Users</Label>
                 <ListView></ListView>
                 <Button Content="Add Selected User"/>
+                <Button Content="Add New User"/>
                 <GroupBox Header="Date">
                     <Calendar></Calendar>
                 </GroupBox>
                 <GroupBox Header="Time">
                     <StackPanel>
-                        <Label>Hour</Label>
-                        <Label>Minute</Label>
-                        <RadioButton GroupName="AMPM">AM</RadioButton>
-                        <RadioButton GroupName="AMPM">PM</RadioButton>
+                        <Controls:TimeSelector/>
                     </StackPanel>
                 </GroupBox>
+                <Label>Comment</Label>
+                <TextBox></TextBox>
                 <Label>Value (No "$" Sign)</Label>
                 <TextBox></TextBox>
+                <Button>Submit</Button>
+                <Button>Clear</Button>
             </StackPanel>
         </ScrollViewer>
     </Grid>

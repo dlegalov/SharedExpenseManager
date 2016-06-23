@@ -45,7 +45,9 @@ namespace SharedExpenseManager.DataStorageUtil
                 return;
             }
             m_admins.Add(1L);
+            m_admins.Add(4L);
 
+            m_userList.Add(new User(4L, "admin", "admin", "admin", @"admin@test.com", "admin"));
             m_userList.Add(new User(1L, "John", "Doe", "JohnDoe", @"JohnDoe@test.com", "test"));
             m_userList.Add(new User(2L, "Jane", "Doe", "JaneDoe", @"JaneDoe@test.com", "test"));
             m_userList.Add(new User(3L, "Bob", "Doe", "BobDoe", @"BobDoe@test.com", ""));

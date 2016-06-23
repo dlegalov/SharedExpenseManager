@@ -85,6 +85,14 @@ namespace SharedExpenseManager
 
         }
 
+        public static StorageFile StorageFile
+        {
+            get
+            {
+                return m_storageFile;
+            }
+        }
+
         public static void Save()
         {
             DataStorage.GetInstance.SaveStorageFile(new StorageFile(true)); // Currently uses a test-specific constructor
@@ -171,6 +179,18 @@ namespace SharedExpenseManager
         {
             m_storageFile.AddExpense(expense);
             return true;
+        }
+
+        public static void StorageFileUpdateEventAddHandler(StorageFile.StorageFileUpdateHandler handler)
+        {
+            // Should have more reliable subscription system
+            m_storageFile.StorageFileUpdateEvent += handler;
+        }
+
+        public static void StorageFileUpdateEventRemoveHandler(StorageFile.StorageFileUpdateHandler handler)
+        {
+            // Should have more reliable subscription system
+            m_storageFile.StorageFileUpdateEvent -= handler;
         }
     }
 }
