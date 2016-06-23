@@ -80,6 +80,7 @@
     <Compile Include="Users\Id.cs" />
     <Compile Include="Users\IUser.cs" />
     <Compile Include="Users\User.cs" />
+    <Compile Include="Utility\NotifyPropertyChangedBase.cs" />
     <Compile Include="ViewModels\AdminScreenViewModel.cs" />
     <Compile Include="ViewModels\CreateExpenseViewModel.cs" />
     <Compile Include="ViewModels\LoginScreenViewModel.cs" />

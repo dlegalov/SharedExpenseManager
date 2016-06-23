@@ -3,24 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using SharedExpenseManager.Expenses;
 using SharedExpenseManager.Users;
 using SharedExpenseManager.DataStorageUtil;
+using SharedExpenseManager.Utility;
 
 namespace SharedExpenseManager.ViewModels
 {
     public class CreateExpenseViewModel : ViewModelBase
     {
-        private List<User> m_availableUserList;
-        private List<User> m_selectedUserList;
+        private object m_lockObject = new object();
 
         private double m_value;
+
         private DateTime m_dateTime;
 
-        private User m_availableUserSelection;
-        private User m_selectedUserSelection;
+        private User m_payingUser;
 
-        private Dictionary<User, bool> m_selectedUserDict;
+        private List<SelectedUser> m_userSelectionList;
+
+        private List<SelectedUser> m_paySelectionList;
 
         private StorageFile.StorageFileUpdateHandler m_storageFileUpdateHandler;
 
@@ -28,6 +31,8 @@ namespace SharedExpenseManager.ViewModels
         {
             m_storageFileUpdateHandler = new StorageFile.StorageFileUpdateHandler(OnStorageFileUpdate);
             AppController.StorageFileUpdateEventAddHandler(m_storageFileUpdateHandler);
+            this.CreateSelectedUserList();
+            m_payingUser = new User();
         }
 
         ~CreateExpenseViewModel()
@@ -43,14 +48,43 @@ namespace SharedExpenseManager.ViewModels
             }
         }
 
-        public DelegateCommand SelectUserCommand
+        public List<SelectedUser> SelectedUserList
         {
-            get { return new DelegateCommand(OnSelectUserCommand); }
+            get
+            {
+                return m_userSelectionList;
+            }
+            set
+            {
+                m_userSelectionList = value;
+                OnPropertyChanged("SelectedUserList");
+            }
         }
 
-        public DelegateCommand RemoveUserCommand
+        public List<SelectedUser> PaySelectionList
         {
-            get { return new DelegateCommand(OnRemoveUserCommand); }
+            get
+            {
+                return m_paySelectionList;
+            }
+            set
+            {
+                m_paySelectionList = value;
+                OnPropertyChanged("PaySelectionList");
+            }
+        }
+
+        public double Value
+        {
+            get
+            {
+                return m_value;
+            }
+            set
+            {
+                m_value = value;
+                OnPropertyChanged("Value");
+            }
         }
 
         public DelegateCommand NewUserCommand
@@ -68,14 +102,14 @@ namespace SharedExpenseManager.ViewModels
             get { return new DelegateCommand(OnSubmitCommand); }
         }
 
-        private void OnSelectUserCommand()
+        public DelegateCommand<bool> UserSelectionCheckedCommand
         {
-
+            get { return new DelegateCommand<bool>(OnUserSelectionCheckBoxChecked); }
         }
 
-        private void OnRemoveUserCommand()
+        public DelegateCommand<User> PayerSelectionCheckedCommand
         {
-
+            get { return new DelegateCommand<User>(OnPayerSelectionCheckBoxChecked); }
         }
 
         private void OnNewUserCommand()
@@ -85,7 +119,8 @@ namespace SharedExpenseManager.ViewModels
 
         private void OnClearCommand()
         {
-
+            this.CreateSelectedUserList();
+            Value = 0;
         }
 
         private void OnSubmitCommand()
@@ -103,12 +138,109 @@ namespace SharedExpenseManager.ViewModels
             // Logic for when storage file has an update (new user/expense)
         }
 
-        private void CreateSelectedUserDict()
+        private void CreateSelectedUserList()
         {
-            m_selectedUserDict = new Dictionary<User, bool>();
+            m_userSelectionList = new List<SelectedUser>();
             foreach (var user in AppController.StorageFile.UserList)
             {
-                m_selectedUserDict.Add(user, false);
+                if (user.Id != AppController.LoggedInUser.Id)
+                {
+                    m_userSelectionList.Add(new SelectedUser(user));
+                }
+            }
+            OnPropertyChanged("SelectedUserList");
+        }
+
+        private void OnUserSelectionCheckBoxChecked(bool isChecked)
+        {
+            m_paySelectionList = new List<SelectedUser>();
+            m_paySelectionList.Add(new SelectedUser(AppController.LoggedInUser));
+            foreach (var selectedUser in SelectedUserList)
+            {
+                if (selectedUser.Selected)
+                {
+                    m_paySelectionList.Add(new SelectedUser(selectedUser.User));
+                }
+            }
+            OnPropertyChanged("PaySelectionList");
+        }
+
+        private void OnPayerSelectionCheckBoxChecked(User user)
+        {
+            m_payingUser = user;
+            foreach (var selectedUser in PaySelectionList)
+            {
+                if (selectedUser.User.Id != m_payingUser.Id)
+                {
+                    selectedUser.Selected = false;
+                }
+            }
+        }
+    }
+
+    public class SelectedUser : NotifyPropertyChangedBase
+    {
+        private User m_user;
+        private bool m_selected;
+
+        public SelectedUser(User user)
+            : this(user, false)
+        {
+        }
+
+        public SelectedUser(User user, bool selected)
+        {
+            m_user = user;
+            m_selected = selected;
+        }
+
+        public User User
+        {
+            get
+            {
+                return m_user;
+            }
+            set
+            {
+                m_user = value;
+                OnPropertyChanged("User");
+            }
+        }
+
+        public string FirstName
+        {
+            get
+            {
+                return m_user.FirstName;
+            }
+        }
+
+        public string LastName
+        {
+            get
+            {
+                return m_user.LastName;
+            }
+        }
+
+        public string LoginName
+        {
+            get
+            {
+                return m_user.LoginName;
+            }
+        }
+
+        public bool Selected
+        {
+            get
+            {
+                return m_selected;
+            }
+            set
+            {
+                m_selected = value;
+                OnPropertyChanged("Selected");
             }
         }
     }

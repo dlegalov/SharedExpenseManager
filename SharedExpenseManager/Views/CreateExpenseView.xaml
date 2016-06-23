@@ -5,8 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ViewModels="clr-namespace:SharedExpenseManager.ViewModels"
              xmlns:Controls="clr-namespace:SharedExpenseManager.Controls"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             Name="CreateExpenseViewControl">
     <UserControl.DataContext>
         <ViewModels:CreateExpenseViewModel/>
     </UserControl.DataContext>
@@ -15,13 +17,43 @@
             <StackPanel>
                 <Label>Current User</Label>
                 <TextBlock Text="{Binding CurrentUser.LoginName}"></TextBlock>
-                <Label>Users in Expense</Label>
-                <ListView></ListView>
-                <Button Content="Remove Selected User"/>
                 <Label>Available Users</Label>
-                <ListView></ListView>
-                <Button Content="Add Selected User"/>
+                <DataGrid ItemsSource="{Binding SelectedUserList, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" AutoGenerateColumns="False" CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding FirstName}" IsReadOnly="True"/>
+                        <DataGridTextColumn Binding="{Binding LastName}" IsReadOnly="True"/>
+                        <DataGridTemplateColumn Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <CheckBox IsChecked="{Binding Selected, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                                  Command="{Binding ElementName=CreateExpenseViewControl, Path=DataContext.UserSelectionCheckedCommand}"
+                                                  CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked,Mode=OneWay}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
                 <Button Content="Add New User"/>
+                <Label>Select Paying User</Label>
+                <DataGrid ItemsSource="{Binding PaySelectionList, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding FirstName}" IsReadOnly="True"/>
+                        <DataGridTextColumn Binding="{Binding LastName}" IsReadOnly="True"/>
+                        <DataGridTemplateColumn Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <CheckBox IsChecked="{Binding Selected, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                                  Command="{Binding ElementName=CreateExpenseViewControl, Path=DataContext.PayerSelectionCheckedCommand}"
+                                                  CommandParameter="{Binding Path=User,Mode=OneWay}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
                 <GroupBox Header="Date">
                     <Calendar></Calendar>
                 </GroupBox>
@@ -32,8 +64,11 @@
                 </GroupBox>
                 <Label>Comment</Label>
                 <TextBox></TextBox>
-                <Label>Value (No "$" Sign)</Label>
-                <TextBox></TextBox>
+                <Label>Value</Label>
+                <StackPanel Orientation="Horizontal">
+                    <Label>$</Label>
+                    <TextBox HorizontalAlignment="Stretch"></TextBox>
+                </StackPanel>
                 <Button>Submit</Button>
                 <Button>Clear</Button>
             </StackPanel>
