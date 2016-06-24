@@ -20,9 +20,9 @@
                 <Label>Available Users</Label>
                 <DataGrid ItemsSource="{Binding SelectedUserList, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" AutoGenerateColumns="False" CanUserAddRows="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding FirstName}" IsReadOnly="True"/>
-                        <DataGridTextColumn Binding="{Binding LastName}" IsReadOnly="True"/>
-                        <DataGridTemplateColumn Width="*">
+                        <DataGridTextColumn Header="First Name" Binding="{Binding FirstName}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}" IsReadOnly="True"/>
+                        <DataGridTemplateColumn Header="Selected" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Grid>
@@ -39,9 +39,9 @@
                 <Label>Select Paying User</Label>
                 <DataGrid ItemsSource="{Binding PaySelectionList, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding FirstName}" IsReadOnly="True"/>
-                        <DataGridTextColumn Binding="{Binding LastName}" IsReadOnly="True"/>
-                        <DataGridTemplateColumn Width="*">
+                        <DataGridTextColumn Header="First Name" Binding="{Binding FirstName}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}" IsReadOnly="True"/>
+                        <DataGridTemplateColumn Header="Selected" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Grid>
@@ -55,22 +55,22 @@
                     </DataGrid.Columns>
                 </DataGrid>
                 <GroupBox Header="Date">
-                    <Calendar></Calendar>
+                    <Calendar SelectedDate="{Binding Date}"/>
                 </GroupBox>
                 <GroupBox Header="Time">
                     <StackPanel>
-                        <Controls:TimeSelector/>
+                        <Controls:TimeSelector DateTime="{Binding Time, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
                 </GroupBox>
                 <Label>Comment</Label>
-                <TextBox></TextBox>
+                <TextBox Text="{Binding Description}"></TextBox>
                 <Label>Value</Label>
                 <StackPanel Orientation="Horizontal">
                     <Label>$</Label>
-                    <TextBox HorizontalAlignment="Stretch"></TextBox>
+                    <TextBox HorizontalAlignment="Stretch" Text="{Binding ValueString}"/>
                 </StackPanel>
-                <Button>Submit</Button>
-                <Button>Clear</Button>
+                <Button Command="{Binding SubmitCommand}">Submit</Button>
+                <Button Command="{Binding ClearCommand}">Clear</Button>
             </StackPanel>
         </ScrollViewer>
     </Grid>

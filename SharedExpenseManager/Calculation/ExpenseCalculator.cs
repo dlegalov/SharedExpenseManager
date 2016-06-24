@@ -10,17 +10,17 @@ using SharedExpenseManager.DataStorageUtil;
 
 namespace SharedExpenseManager.Calculation
 {
-    public class ExpenseCalculator
+    public static class ExpenseCalculator
     {
         // User id, UserScore
-        private Dictionary<long, UserScore> m_userScoreDict; // Dictionary of all user scores with those they have a score with. This is strange/complicated with .NET serialization, could try to store as list of keypairs and load into dict on startup
+        private static Dictionary<long, UserScore> m_userScoreDict; // Dictionary of all user scores with those they have a score with. This is strange/complicated with .NET serialization, could try to store as list of keypairs and load into dict on startup
 
-        public ExpenseCalculator()
+        public static ExpenseCalculator()
         {
             m_userScoreDict = new Dictionary<long, UserScore>();
         }
 
-        public void CalcUserScore(User user, StorageFile storageFile) // Count up score for a given user
+        public static void CalcUserScore(User user, StorageFile storageFile) // Count up score for a given user
         {
             if (!m_userScoreDict.ContainsKey(user.Id)) // Check if the user has a score dict
             {
@@ -40,7 +40,7 @@ namespace SharedExpenseManager.Calculation
             }
         }
 
-        public UserScore GetUserScore(User user) // Get the score for a given user
+        public static UserScore GetUserScore(User user) // Get the score for a given user
         {
             if (!m_userScoreDict.ContainsKey(user.Id)) // Check that user has a score
             {

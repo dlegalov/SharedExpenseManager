@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using SharedExpenseManager.Users;
 using SharedExpenseManager.DataStorageUtil;
 using SharedExpenseManager.Expenses;
+using SharedExpenseManager.Calculation;
 
 namespace SharedExpenseManager
 {
@@ -178,6 +179,7 @@ namespace SharedExpenseManager
         public static bool AddExpense(Expense expense)
         {
             m_storageFile.AddExpense(expense);
+            ChangeStatus(string.Format(@"New expense added, paying user: ""{0} {1}""", expense.UserPayer.FirstName, expense.UserPayer.LastName));
             return true;
         }
 
@@ -191,6 +193,12 @@ namespace SharedExpenseManager
         {
             // Should have more reliable subscription system
             m_storageFile.StorageFileUpdateEvent -= handler;
+        }
+
+        public static UserScore GetUserScore(User user)
+        {
+            ExpenseCalculator.CalcUserScore(user, m_storageFile);
+            return ExpenseCalculator.GetUserScore(user);
         }
     }
 }

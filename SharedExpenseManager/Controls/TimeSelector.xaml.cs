@@ -21,6 +21,8 @@ namespace SharedExpenseManager.Controls
     /// </summary>
     public partial class TimeSelector : UserControl, INotifyPropertyChanged
     {
+        public static readonly DependencyProperty DateTimeProperty = DependencyProperty.Register("DateTime", typeof(DateTime), typeof(TimeSelector), null);
+
         public enum Period
         {
             AM,
@@ -121,7 +123,12 @@ namespace SharedExpenseManager.Controls
         {
             get
             {
-                return new DateTime(0,0,0, SelectedPeriod == Period.AM ? Hour : Hour + 12, Minute, Second);
+                DateTime = new DateTime(0, 0, 0, SelectedPeriod == Period.AM ? Hour : Hour + 12, Minute, Second);
+                return (DateTime)GetValue(DateTimeProperty);
+            }
+            set
+            {
+                SetValue(DateTimeProperty, value);
             }
         }
 

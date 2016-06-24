@@ -17,6 +17,12 @@ namespace SharedExpenseManager.ViewModels
 
         private double m_value;
 
+        private string m_valueString;
+
+        private DateTime m_date;
+
+        private DateTime m_time;
+
         private DateTime m_dateTime;
 
         private User m_payingUser;
@@ -24,6 +30,8 @@ namespace SharedExpenseManager.ViewModels
         private List<SelectedUser> m_userSelectionList;
 
         private List<SelectedUser> m_paySelectionList;
+
+        private string m_description;
 
         private StorageFile.StorageFileUpdateHandler m_storageFileUpdateHandler;
 
@@ -78,12 +86,72 @@ namespace SharedExpenseManager.ViewModels
         {
             get
             {
-                return m_value;
+                return double.Parse(m_valueString);
             }
             set
             {
                 m_value = value;
                 OnPropertyChanged("Value");
+            }
+        }
+
+        public string ValueString
+        {
+            get
+            {
+                return m_valueString;
+            }
+            set
+            {
+                m_valueString = value;
+                OnPropertyChanged("ValueString");
+            }
+        }
+
+        public string Description
+        {
+            get
+            {
+                return m_description;
+            }
+            set
+            {
+                m_description = value;
+                OnPropertyChanged("Description");
+            }
+        }
+
+        public DateTime Time
+        {
+            get
+            {
+                return m_time;
+            }
+            set
+            {
+                m_time = value;
+                OnPropertyChanged("Time");
+            }
+        }
+
+        public DateTime Date
+        {
+            get
+            {
+                return m_time;
+            }
+            set
+            {
+                m_time = value;
+                OnPropertyChanged("Date");
+            }
+        }
+
+        private DateTime DateTime
+        {
+            get
+            {
+                return new DateTime(Date.Year, Date.Month, Date.Day, Time.Hour, Time.Minute, Time.Second);
             }
         }
 
@@ -114,18 +182,21 @@ namespace SharedExpenseManager.ViewModels
 
         private void OnNewUserCommand()
         {
-
+            // Logic to add a new user
         }
 
         private void OnClearCommand()
         {
             this.CreateSelectedUserList();
-            Value = 0;
+            this.OnUserSelectionCheckBoxChecked(false);
+            Description = string.Empty;
+            ValueString = string.Empty;
         }
 
         private void OnSubmitCommand()
         {
-
+            AppController.AddExpense(CreateExpense());
+            OnClearCommand();
         }
 
         private void LoadUsers()
@@ -175,6 +246,11 @@ namespace SharedExpenseManager.ViewModels
                     selectedUser.Selected = false;
                 }
             }
+        }
+
+        private Expense CreateExpense()
+        {
+            return new Expense(m_payingUser, m_paySelectionList.Select(x => x.User).ToList(), DateTime, Value, Description);
         }
     }
 
